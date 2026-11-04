@@ -53,11 +53,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
             {/* Left Narrative */}
             <div className="lg:col-span-7 space-y-6">
               <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs font-semibold uppercase tracking-wider text-[#176B68]">
-                <span>नोव्हेंबर २०२६ अंक</span>
+                <span>{currentEdition.editionMonth}</span>
                 <span className="text-[#5D6B63]/60 hidden sm:inline" aria-hidden="true">·</span>
-                <span>वर्ष १४, अंक ११</span>
+                <span>{currentEdition.title}</span>
                 <span className="text-[#5D6B63]/60 hidden sm:inline" aria-hidden="true">·</span>
-                <span>मराठी विचार मासिक</span>
+                <span>मानवी मनाचा शोध घेणारे</span>
               </div>
 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-[#202A35] leading-[1.25] text-balance">
@@ -94,7 +94,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#176B68] hover:bg-[#135855] text-white font-semibold text-base transition-all shadow-md hover:shadow-lg focus-visible:outline-2 focus-visible:outline-[#202A35] min-h-[48px]"
                 >
                   <BookOpen className="w-5 h-5" />
-                  <span>नोव्हेंबर २०२६ अंक वाचा</span>
+                  <span>{currentEdition.title} वाचा</span>
                 </button>
 
                 <button
@@ -182,7 +182,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <div className="space-y-4">
             <div className="aspect-[16/9] rounded-xl overflow-hidden border border-black/5 shadow-sm">
               <img
-                src="/src/assets/images/theme_contemplation_1793724774513.jpg"
+                src="/assets/images/theme_contemplation_1793724774513.jpg"
                 alt="मासिक संकल्पना छायाचित्र"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover"

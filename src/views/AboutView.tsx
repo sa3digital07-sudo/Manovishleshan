@@ -22,6 +22,33 @@ export const AboutView: React.FC<AboutViewProps> = ({ setCurrentPage }) => {
         </p>
       </div>
 
+      {/* Official Emblem & Identity Card */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#E5ECE6]/80 via-white to-[#F7F4EE] border border-[#176B68]/20 shadow-sm flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
+        <div className="relative shrink-0">
+          <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden border-4 border-white shadow-md bg-white">
+            <img
+              src="/assets/aistudio/Logo_5109781a.jpeg"
+              alt="मासिक मनोविश्लेषण अधिकृत बोधचिन्ह"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <span className="absolute -bottom-2 -right-1 px-2.5 py-0.5 rounded-full bg-[#176B68] text-white text-[11px] font-bold shadow-xs">
+            स्थापना २०११
+          </span>
+        </div>
+        <div className="space-y-2 text-center sm:text-left">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#A64F35]">
+            अधिकृत बोधचिन्ह व ब्रीदवाक्य
+          </span>
+          <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#202A35]">
+            "मानवी मनाचा शोध घेणारे"
+          </h2>
+          <p className="text-sm text-[#5D6B63] leading-relaxed max-w-lg">
+            जालना येथून वर्ष २०११ मध्ये सुरू झालेले हे मासिक मराठी मनाला समृद्ध, जागरूक आणि समतोल बनवण्यासाठी कटिबद्ध आहे. बोधचिन्हातील मानवी मुखवटा, वृक्ष आणि संवाद हे अंतर्मनाच्या निरंतर विकासाचे प्रतीक आहेत.
+          </p>
+        </div>
+      </div>
+
       {/* Narrative Section */}
       <div className="prose prose-stone max-w-none text-base sm:text-lg text-[#202A35] leading-[1.85] space-y-6">
         <p className="first-letter:text-5xl first-letter:font-serif first-letter:font-bold first-letter:text-[#176B68] first-letter:float-left first-letter:mr-3 first-letter:mt-1">

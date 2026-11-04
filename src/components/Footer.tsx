@@ -31,9 +31,21 @@ export const Footer: React.FC<FooterProps> = ({ setCurrentPage }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 pb-12 border-b border-[#F7F4EE]/10">
           {/* Brand & Purpose (5 cols) */}
           <div className="lg:col-span-5 space-y-4">
-            <span className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-white block">
-              मासिक मनोविश्लेषण
-            </span>
+            <div className="flex items-center gap-3">
+              <img
+                src="/assets/aistudio/Logo_5109781a.jpeg"
+                alt="मासिक मनोविश्लेषण बोधचिन्ह"
+                className="w-12 h-12 rounded-full object-cover border-2 border-[#D7B56D]/40 shadow-sm shrink-0"
+              />
+              <div>
+                <span className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-white block leading-tight">
+                  मासिक मनोविश्लेषण
+                </span>
+                <span className="text-xs text-[#D7B56D] font-medium tracking-wide">
+                  मानवी मनाचा शोध घेणारे
+                </span>
+              </div>
+            </div>
             <p className="text-sm text-[#F7F4EE]/80 leading-relaxed max-w-md">
               मराठी भाषेतील अग्रगण्य डिजिटल मानसशास्त्र मासिक आणि मानसिक स्वास्थ्य शिक्षण व्यासपीठ. शास्त्रीय दृष्टिकोन, मानवी संवेदनशीलता आणि व्यावहारिक उपायांचा संगम.
             </p>

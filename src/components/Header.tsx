@@ -30,12 +30,17 @@ export const Header: React.FC<HeaderProps> = ({
       <header className="sticky top-0 z-40 bg-[#F7F4EE]/95 backdrop-blur-md border-b border-[#202A35]/10 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-6 h-18">
-            {/* Zone 1: Brand Wordmark (Single text element) */}
+            {/* Zone 1: Brand Wordmark with Logo */}
             <button
               onClick={() => handleNavClick('home')}
-              className="text-left text-xl sm:text-2xl font-serif font-bold tracking-tight text-[#176B68] hover:text-[#135855] transition-colors whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-[#176B68]"
+              className="flex items-center gap-2.5 text-left text-xl sm:text-2xl font-serif font-bold tracking-tight text-[#176B68] hover:text-[#135855] transition-colors whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-[#176B68]"
             >
-              मासिक मनोविश्लेषण
+              <img
+                src="/assets/aistudio/Logo_5109781a.jpeg"
+                alt="मासिक मनोविश्लेषण बोधचिन्ह"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border border-[#176B68]/20 shadow-xs shrink-0"
+              />
+              <span className="truncate">मासिक मनोविश्लेषण</span>
             </button>
 
             {/* Zone 2: 5 Concise Single-Line Navigation Links */}

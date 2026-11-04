@@ -1,0 +1,8 @@
+{
+  "name": "मासिक मनोविश्लेषण - Marathi Digital Psychology Magazine",
+  "description": "महाराष्ट्र आणि मराठी वाचकांसाठी अग्रगण्य डिजिटल मानसशास्त्र मासिक, मानसिक स्वास्थ्य शिक्षण आणि विचारप्रवर्तक व्यासपीठ.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

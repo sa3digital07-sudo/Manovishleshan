@@ -111,7 +111,7 @@ export default function App() {
       />
 
       {/* Main Container */}
-      <main className={`flex-1 w-full mx-auto ${currentPage === 'reader' ? 'max-w-7xl px-3 sm:px-6 py-4' : 'max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8'}`}>
+      <main className={`flex-1 w-full ${currentPage === 'reader' ? '' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8'}`}>
         {currentPage === 'home' && (
           <HomeView
             setCurrentPage={setCurrentPage}

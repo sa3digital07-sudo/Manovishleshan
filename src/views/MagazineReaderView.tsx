@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { PageView, UserAccount, Chapter } from '../types';
+import React, { useState } from 'react';
+import { PageView, UserAccount } from '../types';
 import { CURRENT_EDITION_CHAPTERS, PUBLICATIONS_DATA, CURRENT_EDITION_ID } from '../data/mockData';
 import { AdvertisementBanner } from '../components/AdvertisementBanner';
 import { evaluateAssessment, AssessmentResult } from '../utils/magazineLogic';
@@ -11,11 +11,9 @@ import {
   Share2,
   Bookmark,
   Check,
-  Type,
   Menu,
   X,
   Sparkles,
-  HelpCircle,
   Clock,
   RotateCcw,
 } from 'lucide-react';
@@ -31,7 +29,6 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
   setCurrentPage,
   user,
   onToggleBookmark,
-  onOpenAccount,
 }) => {
   const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
   const [fontSize, setFontSize] = useState<'normal' | 'large' | 'xlarge'>('normal');
@@ -54,7 +51,6 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
   const chapters = CURRENT_EDITION_CHAPTERS;
   const chapter = chapters[currentChapterIndex] || chapters[0];
 
-  // Calculate progress %
   const progressPercent = Math.round(((currentChapterIndex + 1) / chapters.length) * 100);
 
   const handleNextChapter = () => {
@@ -73,17 +69,10 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
 
   const handleCopyShare = () => {
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(window.location.href);
+      navigator.clipboard.writeText(`मासिक मनोविश्लेषण - ${chapter.title}`);
       setShareCopied(true);
       setTimeout(() => setShareCopied(false), 2500);
     }
-  };
-
-  const handleWhatsAppShare = () => {
-    const text = encodeURIComponent(
-      `मासिक मनोविश्लेषण - नोव्हेंबर २०२६ अंक: ${chapter.title}\nयेथे वाचा: ${window.location.href}`
-    );
-    window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
 
   const isBookmarked = user.bookmarks.includes(currentPub.id);
@@ -93,7 +82,6 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
     setAssessmentResult(res);
   };
 
-  // Font size classes
   const fontClasses = {
     normal: 'text-base sm:text-lg leading-[1.8]',
     large: 'text-lg sm:text-xl leading-[1.85]',
@@ -101,15 +89,15 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen pb-16 bg-white">
       {/* Top Utility Sticky Reading Ribbon */}
-      <div className="sticky top-18 z-30 bg-[#F7F4EE]/95 backdrop-blur-md border-b border-[#202A35]/10 px-4 py-3">
+      <div className="sticky top-18 sm:top-20 z-30 bg-white/95 backdrop-blur-md border-b border-[#E4E9EF] px-4 py-2.5 shadow-xs">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
           {/* Back & Chapter Drawer Trigger */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <button
               onClick={() => setCurrentPage('home')}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#5D6B63] hover:text-[#202A35] transition-colors p-1.5 rounded-lg hover:bg-black/5"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#626D79] hover:text-[#245A91] transition-colors p-1.5 rounded-lg hover:bg-[#F5F7FA]"
             >
               <ArrowLeft className="w-4 h-4" />
               <span className="hidden sm:inline">मुख्यपृष्ठ</span>
@@ -117,55 +105,55 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
 
             <button
               onClick={() => setSidebarOpen(true)}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#E5ECE6] text-[#176B68] text-xs font-semibold hover:bg-[#d5e0d7] transition-colors min-h-[38px]"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#EBF3FA] text-[#245A91] text-xs font-bold hover:bg-[#dbe9f6] transition-colors min-h-[38px]"
             >
               <Menu className="w-4 h-4" />
               <span className="max-w-[150px] sm:max-w-[200px] truncate">
-                सूची: {currentChapterIndex + 1}/{chapters.length}
+                अनुक्रमणिका ({currentChapterIndex + 1}/{chapters.length})
               </span>
             </button>
           </div>
 
           {/* Reading Progress Indicator */}
           <div className="hidden md:flex items-center gap-3 flex-1 max-w-xs">
-            <div className="w-full bg-[#202A35]/10 rounded-full h-1.5 overflow-hidden">
+            <div className="w-full bg-[#E4E9EF] rounded-full h-1.5 overflow-hidden">
               <div
-                className="bg-[#176B68] h-full transition-all duration-300"
+                className="bg-[#245A91] h-full transition-all duration-300"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
-            <span className="text-[11px] font-mono text-[#5D6B63] whitespace-nowrap">
+            <span className="text-[11px] font-mono font-bold text-[#626D79] whitespace-nowrap">
               {progressPercent}%
             </span>
           </div>
 
           {/* Accessibility Font Size & Actions */}
           <div className="flex items-center gap-2">
-            {/* Font Adjuster for Older Readers */}
-            <div className="flex items-center bg-[#E5ECE6] rounded-lg p-0.5 text-xs font-semibold">
+            {/* Font Adjuster for Seniors */}
+            <div className="flex items-center bg-[#F5F7FA] border border-[#E4E9EF] rounded-lg p-0.5 text-xs font-semibold">
               <button
                 onClick={() => setFontSize('normal')}
-                title="सामान्य अक्षर आकार"
+                title="सामान्य आकार"
                 className={`px-2 py-1 rounded transition-colors ${
-                  fontSize === 'normal' ? 'bg-white text-[#176B68] shadow-sm' : 'text-[#5D6B63]'
+                  fontSize === 'normal' ? 'bg-white text-[#245A91] shadow-xs font-bold' : 'text-[#626D79]'
                 }`}
               >
                 अ
               </button>
               <button
                 onClick={() => setFontSize('large')}
-                title="मोठा अक्षर आकार"
+                title="मोठा आकार"
                 className={`px-2 py-1 rounded transition-colors ${
-                  fontSize === 'large' ? 'bg-white text-[#176B68] shadow-sm' : 'text-[#5D6B63]'
+                  fontSize === 'large' ? 'bg-white text-[#245A91] shadow-xs font-bold' : 'text-[#626D79]'
                 }`}
               >
                 अ+
               </button>
               <button
                 onClick={() => setFontSize('xlarge')}
-                title="अति मोठा आकार (ज्येष्ठ वाचकांसाठी)"
+                title="अति मोठा आकार"
                 className={`px-2 py-1 rounded transition-colors ${
-                  fontSize === 'xlarge' ? 'bg-white text-[#176B68] shadow-sm' : 'text-[#5D6B63]'
+                  fontSize === 'xlarge' ? 'bg-white text-[#245A91] shadow-xs font-bold' : 'text-[#626D79]'
                 }`}
               >
                 अ++
@@ -176,41 +164,41 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
             <button
               onClick={() => onToggleBookmark(currentPub.id)}
               aria-label={isBookmarked ? 'अंक जतन केला आहे' : 'अंक जतन करा'}
-              className={`p-2 rounded-lg transition-colors ${
+              className={`p-2 rounded-lg transition-colors border border-[#E4E9EF] ${
                 isBookmarked
-                  ? 'bg-[#D7B56D] text-[#202A35]'
-                  : 'text-[#5D6B63] hover:bg-black/5'
+                  ? 'bg-[#F2C14E] text-[#20354D] border-[#F2C14E]'
+                  : 'text-[#626D79] hover:bg-[#F5F7FA]'
               }`}
             >
               <Bookmark className="w-4 h-4 fill-current" />
             </button>
 
-            {/* Share Menu */}
+            {/* Share button */}
             <button
-              onClick={handleWhatsAppShare}
-              aria-label="व्हॉट्सॲपवर शेअर करा"
-              className="p-2 rounded-lg text-[#176B68] hover:bg-[#176B68]/10 transition-colors hidden sm:inline-flex"
+              onClick={handleCopyShare}
+              aria-label="शेअर लिंक कॉपी करा"
+              className="p-2 rounded-lg border border-[#E4E9EF] text-[#245A91] hover:bg-[#EBF3FA] transition-colors flex items-center justify-center min-w-[36px]"
             >
-              <Share2 className="w-4 h-4" />
+              {shareCopied ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile thin reading progress line */}
-        <div className="md:hidden w-full bg-[#202A35]/10 h-1 mt-2">
+        {/* Mobile Reading Progress Line */}
+        <div className="md:hidden w-full bg-[#E4E9EF] h-1 mt-2">
           <div
-            className="bg-[#176B68] h-full transition-all duration-300"
+            className="bg-[#245A91] h-full transition-all duration-300"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
       </div>
 
       {/* Main Reading Frame */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-8 sm:pt-10">
         {/* Chapter Header */}
-        <div className="space-y-4 pb-8 border-b border-[#202A35]/15 text-center sm:text-left">
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-xs text-[#5D6B63]">
-            <span className="font-semibold text-[#176B68] uppercase tracking-wider">
+        <div className="space-y-3 pb-6 border-b border-[#E4E9EF] text-center sm:text-left">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-xs text-[#626D79]">
+            <span className="font-bold text-[#245A91] uppercase tracking-wider bg-[#EBF3FA] px-2 py-0.5 rounded">
               {chapter.category}
             </span>
             <span>·</span>
@@ -219,66 +207,66 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
               <span>वाचन वेळ: {chapter.readTime}</span>
             </span>
             <span>·</span>
-            <span>नोव्हेंबर २०२६ विशेषांक</span>
+            <span>{currentPub.editionMonth}</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-[#202A35] leading-[1.25]">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#252D38] leading-tight">
             {chapter.title}
           </h1>
 
           {chapter.subtitle && (
-            <p className="text-base sm:text-lg text-[#5D6B63] italic font-serif">
+            <p className="text-sm sm:text-base text-[#D97706] font-semibold">
               {chapter.subtitle}
             </p>
           )}
 
-          <div className="flex items-center justify-center sm:justify-start gap-3 pt-2 text-xs text-[#5D6B63]">
-            <span className="font-semibold text-[#202A35]">{chapter.author}</span>
+          <div className="flex items-center justify-center sm:justify-start gap-3 pt-1 text-xs text-[#626D79]">
+            <span className="font-bold text-[#252D38]">{chapter.author}</span>
             <span>·</span>
             <span>{chapter.authorRole}</span>
           </div>
         </div>
 
         {/* Chapter Content Prose */}
-        <article className="py-8 sm:py-12 space-y-6">
+        <article className="py-8 space-y-6">
           {/* Drop Cap & Opening Paragraphs */}
           {chapter.content.map((paragraph, idx) => {
             if (idx === 0) {
               return (
                 <p
                   key={idx}
-                  className={`${fontClasses[fontSize]} text-[#202A35] first-letter:text-5xl first-letter:font-serif first-letter:font-bold first-letter:text-[#176B68] first-letter:float-left first-letter:mr-3 first-letter:mt-1`}
+                  className={`${fontClasses[fontSize]} text-[#252D38] first-letter:text-5xl first-letter:font-bold first-letter:text-[#245A91] first-letter:float-left first-letter:mr-3 first-letter:mt-1`}
                 >
                   {paragraph}
                 </p>
               );
             }
             return (
-              <p key={idx} className={`${fontClasses[fontSize]} text-[#202A35]`}>
+              <p key={idx} className={`${fontClasses[fontSize]} text-[#252D38]`}>
                 {paragraph}
               </p>
             );
           })}
 
-          {/* Pull Quote if available */}
+          {/* Pull Quote */}
           {chapter.pullQuote && (
-            <blockquote className="my-10 p-6 sm:p-8 rounded-2xl bg-[#E5ECE6]/60 border-y border-[#176B68]/30 text-center space-y-2">
-              <p className="text-xl sm:text-2xl font-serif italic text-[#202A35] leading-relaxed">
+            <blockquote className="my-8 p-6 sm:p-8 rounded-2xl bg-[#F5F7FA] border-l-4 border-[#245A91] text-center space-y-2">
+              <p className="text-lg sm:text-xl italic font-serif text-[#20354D] leading-relaxed">
                 "{chapter.pullQuote}"
               </p>
             </blockquote>
           )}
 
-          {/* Bullet points if available */}
+          {/* Bullet points */}
           {chapter.bulletPoints && (
-            <div className="my-6 p-6 rounded-2xl bg-white border border-[#202A35]/10 space-y-3">
-              <h4 className="font-serif font-bold text-base text-[#176B68]">
+            <div className="my-6 p-6 rounded-2xl bg-[#F5F7FA] border border-[#E4E9EF] space-y-3">
+              <h4 className="font-bold text-base text-[#245A91]">
                 महत्त्वाचे मुख्य मुद्दे:
               </h4>
-              <ul className="space-y-2 text-sm sm:text-base text-[#202A35]">
+              <ul className="space-y-2 text-sm sm:text-base text-[#252D38]">
                 {chapter.bulletPoints.map((pt, i) => (
                   <li key={i} className="flex items-start gap-2.5">
-                    <span className="w-2 h-2 rounded-full bg-[#176B68] mt-2 shrink-0" />
+                    <span className="w-2 h-2 rounded-full bg-[#245A91] mt-2 shrink-0" />
                     <span>{pt}</span>
                   </li>
                 ))}
@@ -288,22 +276,22 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
 
           {/* INTERACTIVE SELF-ASSESSMENT COMPONENT (Chapter 10) */}
           {chapter.id === 'self-assessment' && (
-            <div className="my-10 p-6 sm:p-8 rounded-2xl bg-white border-2 border-[#176B68]/30 shadow-md space-y-6">
+            <div className="my-8 p-6 sm:p-8 rounded-2xl bg-white border-2 border-[#245A91]/30 shadow-md space-y-6">
               <div className="space-y-2 text-center sm:text-left">
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#176B68] flex items-center gap-1.5">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#245A91] flex items-center gap-1.5">
                   <Sparkles className="w-4 h-4" />
                   <span>संवादात्मक स्व-मूल्यमापन चाचणी</span>
                 </span>
-                <h3 className="text-xl sm:text-2xl font-serif font-bold text-[#202A35]">
+                <h3 className="text-xl sm:text-2xl font-bold text-[#252D38]">
                   भावनिक लवचिकता व तणाव मोजणी (Resilience Scale)
                 </h3>
-                <p className="text-xs text-[#5D6B63]">
+                <p className="text-xs text-[#626D79]">
                   प्रत्येक विधानासाठी ० (कधीच नाही) ते ३ (नेहमी) यापैकी स्वतःला सर्वात जवळचा पर्याय निवडा.
                 </p>
               </div>
 
               {/* Questions */}
-              <div className="space-y-5 pt-2">
+              <div className="space-y-4 pt-2">
                 {[
                   {
                     id: 1,
@@ -326,8 +314,8 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
                     text: '५. दिवसभरात स्वतःच्या विश्रांती आणि छंदासाठी मी किमान १५-२० मिनिटे शांत वेळ काढतो/काढते.',
                   },
                 ].map((q) => (
-                  <div key={q.id} className="p-4 rounded-xl bg-[#F7F4EE] space-y-2.5">
-                    <p className="text-sm sm:text-base font-semibold text-[#202A35]">{q.text}</p>
+                  <div key={q.id} className="p-4 rounded-xl bg-[#F5F7FA] border border-[#E4E9EF] space-y-2.5">
+                    <p className="text-sm font-semibold text-[#252D38]">{q.text}</p>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                       {[
                         { label: 'कधीच नाही (०)', val: 0 },
@@ -339,10 +327,10 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
                           key={opt.val}
                           type="button"
                           onClick={() => setQuizAnswers({ ...quizAnswers, [q.id]: opt.val })}
-                          className={`py-2 px-2.5 rounded-lg border text-center transition-colors font-medium ${
+                          className={`py-2 px-2.5 rounded-lg border text-center transition-colors font-semibold ${
                             quizAnswers[q.id] === opt.val
-                              ? 'bg-[#176B68] text-white border-[#176B68] shadow-sm'
-                              : 'bg-white text-[#202A35] border-slate-200 hover:border-[#176B68]'
+                              ? 'bg-[#245A91] text-white border-[#245A91] shadow-xs'
+                              : 'bg-white text-[#252D38] border-[#E4E9EF] hover:border-[#245A91]'
                           }`}
                         >
                           {opt.label}
@@ -358,7 +346,7 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
                 <button
                   type="button"
                   onClick={handleCalculateQuiz}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#176B68] hover:bg-[#135855] text-white font-semibold text-sm transition-colors shadow-sm"
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#245A91] hover:bg-[#1E3A8A] text-white font-bold text-xs sm:text-sm transition-colors shadow-xs"
                 >
                   माझा भावनिक स्कोअर व निष्कर्ष पहा
                 </button>
@@ -368,7 +356,7 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
                     setQuizAnswers({ 1: 1, 2: 1, 3: 1, 4: 1, 5: 1 });
                     setAssessmentResult(null);
                   }}
-                  className="text-xs text-[#5D6B63] hover:text-[#202A35] inline-flex items-center gap-1"
+                  className="text-xs text-[#626D79] hover:text-[#252D38] inline-flex items-center gap-1 font-semibold"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>चाचणी पूर्ववत करा</span>
@@ -377,19 +365,19 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
 
               {/* Result Card */}
               {assessmentResult && (
-                <div className="p-5 rounded-xl bg-[#E5ECE6] border border-[#176B68]/30 space-y-2 animate-fadeIn">
+                <div className="p-5 rounded-xl bg-[#EBF3FA] border border-[#245A91]/40 space-y-2 animate-fadeIn">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#176B68]">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#245A91]">
                       आपला निष्कर्ष (Score: {assessmentResult.score} / {assessmentResult.maxScore})
                     </span>
-                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#176B68] text-white">
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#245A91] text-white">
                       {assessmentResult.level}
                     </span>
                   </div>
-                  <h4 className="font-serif font-bold text-lg text-[#202A35]">
+                  <h4 className="font-bold text-base sm:text-lg text-[#20354D]">
                     {assessmentResult.title}
                   </h4>
-                  <p className="text-sm text-[#202A35] leading-relaxed">
+                  <p className="text-xs sm:text-sm text-[#252D38] leading-relaxed">
                     {assessmentResult.recommendation}
                   </p>
                 </div>
@@ -397,38 +385,38 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
             </div>
           )}
 
-          {/* Chapter Break Advertisement (Critical Requirement B) */}
+          {/* Chapter Break Advertisement */}
           {(currentChapterIndex === 2 || currentChapterIndex === 6) && (
             <AdvertisementBanner placement="magazine-break" />
           )}
         </article>
 
         {/* Chapter Navigation Bottom Bar */}
-        <div className="py-8 border-t border-[#202A35]/15 flex items-center justify-between gap-4">
+        <div className="py-6 border-t border-[#E4E9EF] flex items-center justify-between gap-4">
           <button
             onClick={handlePrevChapter}
             disabled={currentChapterIndex === 0}
-            className={`inline-flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-semibold transition-colors min-h-[46px] ${
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-bold transition-colors min-h-[44px] ${
               currentChapterIndex === 0
-                ? 'opacity-40 cursor-not-allowed border-slate-200 text-[#5D6B63]'
-                : 'border-[#202A35]/20 text-[#202A35] hover:bg-[#E5ECE6]'
+                ? 'opacity-40 cursor-not-allowed border-[#E4E9EF] text-[#626D79]'
+                : 'border-[#E4E9EF] text-[#252D38] hover:bg-[#F5F7FA]'
             }`}
           >
             <ChevronLeft className="w-4 h-4" />
             <span>मागील प्रकरण</span>
           </button>
 
-          <span className="text-xs text-[#5D6B63] font-medium hidden sm:inline">
+          <span className="text-xs text-[#626D79] font-semibold hidden sm:inline">
             प्रकरण {currentChapterIndex + 1} पैकी {chapters.length}
           </span>
 
           <button
             onClick={handleNextChapter}
             disabled={currentChapterIndex === chapters.length - 1}
-            className={`inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-colors min-h-[46px] ${
+            className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-colors min-h-[44px] ${
               currentChapterIndex === chapters.length - 1
-                ? 'opacity-40 cursor-not-allowed bg-slate-200 text-[#5D6B63]'
-                : 'bg-[#176B68] hover:bg-[#135855] text-white shadow-sm'
+                ? 'opacity-40 cursor-not-allowed bg-slate-200 text-[#626D79]'
+                : 'bg-[#245A91] hover:bg-[#1E3A8A] text-white shadow-xs'
             }`}
           >
             <span>पुढील प्रकरण</span>
@@ -442,20 +430,20 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-xs animate-fadeIn"
         >
-          <div className="bg-[#F7F4EE] w-full max-w-md h-full shadow-2xl flex flex-col border-l border-[#202A35]/15 animate-fadeIn">
-            <div className="p-5 border-b border-[#202A35]/10 flex items-center justify-between bg-white">
+          <div className="bg-white w-full max-w-md h-full shadow-2xl flex flex-col border-l border-[#E4E9EF]">
+            <div className="p-5 border-b border-[#E4E9EF] flex items-center justify-between bg-white">
               <div className="flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-[#176B68]" />
-                <h3 className="font-serif font-bold text-lg text-[#202A35]">
+                <BookOpen className="w-5 h-5 text-[#245A91]" />
+                <h3 className="font-bold text-lg text-[#252D38]">
                   अंकाची अनुक्रमणिका
                 </h3>
               </div>
               <button
                 onClick={() => setSidebarOpen(false)}
                 aria-label="सूची बंद करा"
-                className="p-1.5 rounded-lg hover:bg-black/5 text-[#5D6B63]"
+                className="p-1.5 rounded-lg hover:bg-[#F5F7FA] text-[#626D79]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -470,24 +458,24 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
                     setSidebarOpen(false);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className={`w-full text-left p-3 rounded-xl transition-colors flex items-start gap-3 min-h-[46px] ${
+                  className={`w-full text-left p-3 rounded-xl transition-colors flex items-start gap-3 min-h-[44px] ${
                     currentChapterIndex === idx
-                      ? 'bg-[#176B68] text-white font-semibold shadow-sm'
-                      : 'hover:bg-[#E5ECE6] text-[#202A35]'
+                      ? 'bg-[#245A91] text-white font-bold shadow-xs'
+                      : 'hover:bg-[#F5F7FA] text-[#252D38]'
                   }`}
                 >
                   <span
                     className={`text-xs font-mono font-bold px-1.5 py-0.5 rounded ${
-                      currentChapterIndex === idx ? 'bg-white/20 text-white' : 'text-[#5D6B63]'
+                      currentChapterIndex === idx ? 'bg-white/20 text-white' : 'text-[#626D79]'
                     }`}
                   >
                     {idx + 1 < 10 ? `०${idx + 1}` : idx + 1}
                   </span>
                   <div className="space-y-0.5 flex-1">
-                    <p className="text-sm font-serif leading-snug line-clamp-1">{ch.title}</p>
+                    <p className="text-sm font-bold leading-snug line-clamp-1">{ch.title}</p>
                     <p
                       className={`text-[11px] ${
-                        currentChapterIndex === idx ? 'text-white/80' : 'text-[#5D6B63]'
+                        currentChapterIndex === idx ? 'text-white/80' : 'text-[#626D79]'
                       }`}
                     >
                       {ch.category} · {ch.readTime}
@@ -497,13 +485,13 @@ export const MagazineReaderView: React.FC<MagazineReaderViewProps> = ({
               ))}
             </div>
 
-            <div className="p-4 border-t border-[#202A35]/10 bg-white space-y-2">
+            <div className="p-4 border-t border-[#E4E9EF] bg-[#F5F7FA] space-y-2">
               <button
                 onClick={() => {
                   setSidebarOpen(false);
                   onToggleBookmark(currentPub.id);
                 }}
-                className="w-full py-2.5 px-4 rounded-xl border border-[#176B68] text-[#176B68] font-semibold text-xs hover:bg-[#176B68] hover:text-white transition-colors flex items-center justify-center gap-2"
+                className="w-full py-2.5 px-4 rounded-xl border border-[#245A91] text-[#245A91] font-bold text-xs hover:bg-[#245A91] hover:text-white transition-colors flex items-center justify-center gap-2"
               >
                 <Bookmark className="w-4 h-4" />
                 <span>{isBookmarked ? 'अंक जतन केला आहे' : 'हा संपूर्ण अंक जतन करा'}</span>

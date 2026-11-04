@@ -68,18 +68,19 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F4EE] text-[#202A35] flex flex-col font-sans selection:bg-[#176B68] selection:text-white">
-      {/* Top Header adhering to Top Bar Contract */}
+    <div className="min-h-screen bg-white text-[#252D38] flex flex-col font-sans selection:bg-[#245A91] selection:text-white">
+      {/* Top Header adhering to Website A Design Direction */}
       <Header
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         user={user}
         onOpenAccount={() => setAccountModalOpen(true)}
         onOpenSearch={() => setSearchModalOpen(true)}
+        onOpenReader={handleOpenReader}
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+      <main className={`flex-1 w-full mx-auto ${currentPage === 'reader' ? 'max-w-7xl px-3 sm:px-6 py-4' : 'max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8'}`}>
         {currentPage === 'home' && (
           <HomeView
             setCurrentPage={setCurrentPage}

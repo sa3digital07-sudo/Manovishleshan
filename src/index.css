@@ -3,32 +3,41 @@
 @layer base {
   :root {
     --font-serif: "Noto Serif Devanagari", Georgia, serif;
-    --font-sans: "Noto Sans Devanagari", system-ui, sans-serif;
+    --font-sans: Mukta, "Noto Sans Devanagari", system-ui, -apple-system, sans-serif;
+    --color-primary-blue: #245A91;
+    --color-deep-blue: #20354D;
+    --color-cta-yellow: #F2C14E;
+    --color-bg-light: #F5F7FA;
+    --color-border-subtle: #E4E9EF;
+    --color-text-main: #252D38;
+    --color-text-muted: #626D79;
   }
 
   body {
     font-family: var(--font-sans);
-    background-color: #F7F4EE;
-    color: #202A35;
+    background-color: #FFFFFF;
+    color: #252D38;
+    line-height: 1.6;
   }
 
   h1, h2, h3, .font-editorial {
-    font-family: var(--font-serif);
+    font-family: Mukta, var(--font-sans);
+    letter-spacing: -0.01em;
   }
 }
 
 /* Custom scrollbar for editorial reading */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: #F7F4EE;
+  background: #F5F7FA;
 }
 ::-webkit-scrollbar-thumb {
-  background: #D7B56D;
-  border-radius: 4px;
+  background: #CBD5E1;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #176B68;
+  background: #245A91;
 }

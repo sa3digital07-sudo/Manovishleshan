@@ -14,11 +14,13 @@ import {
 interface PublicationsViewProps {
   setCurrentPage: (page: PageView) => void;
   onSelectPublication: (pub: Publication) => void;
+  onRequestRead?: (pub: Publication) => void;
 }
 
 export const PublicationsView: React.FC<PublicationsViewProps> = ({
   setCurrentPage,
   onSelectPublication,
+  onRequestRead,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('सर्व');
@@ -184,10 +186,22 @@ export const PublicationsView: React.FC<PublicationsViewProps> = ({
                       <Star className="w-3.5 h-3.5 fill-[#F2C14E]" />
                       <strong className="text-[#252D38]">{pub.rating}</strong> ({pub.reviewsCount} परीक्षणे)
                     </span>
-                    <span className="font-bold text-[#245A91] group-hover:underline inline-flex items-center gap-1">
-                      <span>वाचा व तपशील</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (onRequestRead) {
+                            onRequestRead(pub);
+                          } else {
+                            onSelectPublication(pub);
+                          }
+                        }}
+                        className="px-2.5 py-1 rounded-md bg-[#245A91] hover:bg-[#1E3A8A] text-white font-bold text-[11px] shadow-2xs transition-colors"
+                      >
+                        अंक वाचा
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

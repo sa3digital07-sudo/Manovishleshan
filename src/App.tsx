@@ -34,13 +34,17 @@ export default function App() {
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [accountModalOpen, setAccountModalOpen] = useState(false);
 
-  // User state with initial sample bookmark
+  // Publication reader gate state
+  const [pendingPublication, setPendingPublication] = useState<Publication | null>(null);
+  const [gateNotice, setGateNotice] = useState<string | null>(null);
+
+  // User account state (starts logged out per requirements so gating works as expected)
   const [user, setUser] = useState<UserAccount>({
     isLoggedIn: false,
     name: 'अनिकेत देशमुख',
     email: 'aniket.deshmukh@example.com',
     memberSince: '२०२६',
-    bookmarks: ['edition-nov-2026', 'art-1'],
+    bookmarks: ['edition-stones-balance', 'art-1'],
   });
 
   const handleToggleBookmark = (id: string) => {
@@ -62,21 +66,48 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleOpenReader = () => {
-    setCurrentPage('reader');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Direct Reader Gate Handler
+  const handleRequestRead = (pub?: Publication) => {
+    const target = pub || selectedPublication || PUBLICATIONS_DATA[0];
+
+    if (user.isLoggedIn) {
+      setSelectedPublication(target);
+      setCurrentPage('reader');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // User is logged out: preserve selected publication and open account modal with notice
+      setPendingPublication(target);
+      setGateNotice(`अंक "${target.title}" वाचण्यासाठी कृपया लॉगिन करा किंवा नवीन नोंदणी करा.`);
+      setAccountModalOpen(true);
+    }
+  };
+
+  // Called when login or registration succeeds
+  const handleLoginSuccess = () => {
+    setAccountModalOpen(false);
+    if (pendingPublication) {
+      const target = pendingPublication;
+      setPendingPublication(null);
+      setGateNotice(null);
+      setSelectedPublication(target);
+      setCurrentPage('reader');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
     <div className="min-h-screen bg-white text-[#252D38] flex flex-col font-sans selection:bg-[#245A91] selection:text-white">
-      {/* Top Header adhering to Website A Design Direction */}
+      {/* Top Header adhering to Website A Design Direction & Requirements */}
       <Header
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         user={user}
-        onOpenAccount={() => setAccountModalOpen(true)}
+        onOpenAccount={() => {
+          setGateNotice(null);
+          setAccountModalOpen(true);
+        }}
         onOpenSearch={() => setSearchModalOpen(true)}
-        onOpenReader={handleOpenReader}
+        onRequestRead={() => handleRequestRead(selectedPublication)}
       />
 
       {/* Main Container */}
@@ -86,7 +117,8 @@ export default function App() {
             setCurrentPage={setCurrentPage}
             onSelectPublication={handleSelectPublication}
             onSelectArticle={handleSelectArticle}
-            onOpenReader={handleOpenReader}
+            onOpenReader={() => handleRequestRead(selectedPublication)}
+            onRequestRead={handleRequestRead}
           />
         )}
 
@@ -94,6 +126,7 @@ export default function App() {
           <PublicationsView
             setCurrentPage={setCurrentPage}
             onSelectPublication={handleSelectPublication}
+            onRequestRead={handleRequestRead}
           />
         )}
 
@@ -103,8 +136,11 @@ export default function App() {
             setCurrentPage={setCurrentPage}
             user={user}
             onToggleBookmark={handleToggleBookmark}
-            onOpenReader={handleOpenReader}
-            onOpenAccount={() => setAccountModalOpen(true)}
+            onOpenReader={() => handleRequestRead(selectedPublication)}
+            onOpenAccount={() => {
+              setGateNotice(null);
+              setAccountModalOpen(true);
+            }}
           />
         )}
 
@@ -113,7 +149,10 @@ export default function App() {
             setCurrentPage={setCurrentPage}
             user={user}
             onToggleBookmark={handleToggleBookmark}
-            onOpenAccount={() => setAccountModalOpen(true)}
+            onOpenAccount={() => {
+              setGateNotice(null);
+              setAccountModalOpen(true);
+            }}
           />
         )}
 
@@ -161,14 +200,19 @@ export default function App() {
         setCurrentPage={setCurrentPage}
       />
 
-      {/* Account / Bookmarks Modal */}
+      {/* Account / Bookmarks Modal with 2-Option Login & 5-Field Mandatory Registration */}
       <AccountModal
         isOpen={accountModalOpen}
-        onClose={() => setAccountModalOpen(false)}
+        onClose={() => {
+          setAccountModalOpen(false);
+          setGateNotice(null);
+        }}
         user={user}
         setUser={setUser}
         onOpenPublication={handleSelectPublication}
         onOpenArticle={handleSelectArticle}
+        gateNotice={gateNotice}
+        onLoginSuccess={handleLoginSuccess}
       />
     </div>
   );

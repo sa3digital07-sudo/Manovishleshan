@@ -7,6 +7,7 @@ import {
   QA_DATA,
 } from '../data/mockData';
 import { AdvertisementBanner } from '../components/AdvertisementBanner';
+import { HomeIntroSection } from '../components/HomeIntroSection';
 import {
   BookOpen,
   ArrowRight,
@@ -34,6 +35,7 @@ interface HomeViewProps {
   onSelectPublication: (pub: Publication) => void;
   onSelectArticle: (article: Article) => void;
   onOpenReader: () => void;
+  onRequestRead?: (pub?: Publication) => void;
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({
@@ -41,6 +43,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   onSelectPublication,
   onSelectArticle,
   onOpenReader,
+  onRequestRead,
 }) => {
   // Magazine carousel state for Website A hero layout
   const [activeIssueIndex, setActiveIssueIndex] = useState(0);
@@ -87,6 +90,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
   return (
     <div className="space-y-12 sm:space-y-16">
+      {/* 0. HOMEPAGE INTRODUCTION (Marathi Editorial Constitution) */}
+      <HomeIntroSection
+        onReadLatest={() => (onRequestRead ? onRequestRead(activeIssue) : onOpenReader())}
+        onExploreMore={() => setCurrentPage('about')}
+      />
+
       {/* 1. HERO SECTION — Website A Editorial Direction with Carousel */}
       <section className="pt-2 sm:pt-4">
         <div className="rounded-3xl bg-gradient-to-br from-[#F5F7FA] via-white to-[#EBF3FA]/40 border border-[#E4E9EF] p-6 sm:p-10 lg:p-12 overflow-hidden shadow-xs relative">
@@ -108,8 +117,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 {/* Magazine 3D Cover */}
                 <div
                   onClick={() => {
-                    onSelectPublication(activeIssue);
-                    onOpenReader();
+                    if (onRequestRead) {
+                      onRequestRead(activeIssue);
+                    } else {
+                      onSelectPublication(activeIssue);
+                      onOpenReader();
+                    }
                   }}
                   className="relative group cursor-pointer transition-transform duration-300 hover:scale-[1.02]"
                 >
@@ -212,8 +225,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <button
                     type="button"
                     onClick={() => {
-                      onSelectPublication(activeIssue);
-                      onOpenReader();
+                      if (onRequestRead) {
+                        onRequestRead(activeIssue);
+                      } else {
+                        onSelectPublication(activeIssue);
+                        onOpenReader();
+                      }
                     }}
                     className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#245A91] hover:bg-[#1E3A8A] text-white font-bold text-sm transition-all shadow-xs"
                   >
@@ -497,7 +514,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             </p>
             <div className="pt-2">
               <button
-                onClick={onOpenReader}
+                onClick={() => (onRequestRead ? onRequestRead(activeIssue) : onOpenReader())}
                 className="inline-flex items-center gap-1.5 text-xs font-bold text-[#245A91] hover:underline"
               >
                 <span>लवचिकतेवरील विशेष अंक वाचा</span>

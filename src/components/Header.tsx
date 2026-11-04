@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { PageView, UserAccount } from '../types';
-import { Menu, X, Search, Bookmark, User, BookOpen, ChevronRight } from 'lucide-react';
+import { PageView, UserAccount, Publication } from '../types';
+import { Menu, X, Search, Bookmark, User, BookOpen, ChevronRight, Phone, Mail } from 'lucide-react';
 
 interface HeaderProps {
   currentPage: PageView;
@@ -8,7 +8,7 @@ interface HeaderProps {
   user: UserAccount;
   onOpenAccount: () => void;
   onOpenSearch: () => void;
-  onOpenReader?: () => void;
+  onRequestRead?: (pub?: Publication) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -17,7 +17,7 @@ export const Header: React.FC<HeaderProps> = ({
   user,
   onOpenAccount,
   onOpenSearch,
-  onOpenReader,
+  onRequestRead,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -41,24 +41,31 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E4E9EF] shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-4 h-18 sm:h-20">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between gap-2 sm:gap-4 h-16 sm:h-20">
             {/* Zone 1: Brand Wordmark with Emblem Logo */}
             <button
               onClick={() => handleNavClick('home')}
-              className="flex items-center gap-3 text-left focus-visible:outline-2 focus-visible:outline-[#245A91] group shrink-0"
+              className="flex items-center gap-2 sm:gap-3 text-left focus-visible:outline-2 focus-visible:outline-[#245A91] group shrink-0 min-w-0"
               aria-label="मासिक मनोविश्लेषण मुख्यपृष्ठ"
             >
               <img
                 src="/assets/aistudio/Logo_5109781a.jpeg"
                 alt="मासिक मनोविश्लेषण बोधचिन्ह"
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover border border-[#E4E9EF] shadow-xs shrink-0 group-hover:scale-105 transition-transform"
+                onError={(e) => {
+                  // Fallback alias if path differs
+                  const target = e.currentTarget;
+                  if (!target.src.includes('logo.jpeg')) {
+                    target.src = '/logo.jpeg';
+                  }
+                }}
+                className="w-9 h-9 sm:w-11 sm:h-11 rounded-full object-cover border border-[#E4E9EF] shadow-xs shrink-0 group-hover:scale-105 transition-transform"
               />
-              <div className="flex flex-col">
-                <span className="text-[11px] sm:text-xs font-semibold text-[#626D79] leading-none tracking-wide">
+              <div className="flex flex-col min-w-0">
+                <span className="text-[10px] sm:text-xs font-semibold text-[#626D79] leading-none tracking-wide">
                   मासिक
                 </span>
-                <span className="text-xl sm:text-2xl font-bold tracking-tight text-[#245A91] group-hover:text-[#1D4875] leading-tight">
+                <span className="text-lg sm:text-2xl font-bold tracking-tight text-[#245A91] group-hover:text-[#1D4875] leading-tight truncate">
                   मनोविश्लेषण
                 </span>
                 <span className="text-[10px] sm:text-[11px] text-[#718096] leading-none hidden sm:block">
@@ -67,10 +74,10 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </button>
 
-            {/* Zone 2: Navigation Links (Matching Website A Editorial Simplicity) */}
+            {/* Zone 2: Desktop Navigation Links (Website A Editorial Simplicity) */}
             <nav
               aria-label="मुख्य सूची"
-              className="hidden lg:flex items-center gap-6 xl:gap-8 text-[15px] font-medium text-[#4A5568]"
+              className="hidden lg:flex items-center gap-5 xl:gap-7 text-[15px] font-medium text-[#4A5568]"
             >
               <button
                 onClick={() => handleNavClick('home')}
@@ -150,32 +157,26 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </nav>
 
-            {/* Zone 3: CTA Button (Website A Yellow) & Account / Search Utilities */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Zone 3: Actions (Search, Reader CTA, Account, Hamburger) */}
+            <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+              {/* Search Button (Retained on all screen sizes per requirement) */}
               <button
                 type="button"
                 onClick={onOpenSearch}
                 aria-label="शोध"
-                className="p-2 sm:p-2.5 text-[#4A5568] hover:text-[#245A91] hover:bg-[#F5F7FA] rounded-full transition-colors flex items-center justify-center min-w-[40px] min-h-[40px] focus-visible:outline-2 focus-visible:outline-[#245A91]"
+                className="p-2 sm:p-2.5 text-[#4A5568] hover:text-[#245A91] hover:bg-[#F5F7FA] rounded-full transition-colors flex items-center justify-center min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px] focus-visible:outline-2 focus-visible:outline-[#245A91]"
               >
-                <Search className="w-4 h-4" />
+                <Search className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
               </button>
 
-              {/* Website A's Prominent Yellow Primary CTA */}
+              {/* Website A's Prominent Yellow Primary CTA (Shown on md+ screens to preserve mobile header space) */}
               <button
                 type="button"
-                onClick={() => {
-                  if (onOpenReader) {
-                    onOpenReader();
-                  } else {
-                    handleNavClick('publications');
-                  }
-                }}
-                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-2 rounded-full bg-[#F2C14E] hover:bg-[#E5B542] text-[#20354D] font-bold text-xs sm:text-sm tracking-wide transition-all shadow-xs hover:shadow-sm border border-[#E5B542]/60 min-h-[40px] shrink-0"
+                onClick={() => onRequestRead?.()}
+                className="hidden md:inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-2 rounded-full bg-[#F2C14E] hover:bg-[#E5B542] text-[#20354D] font-bold text-xs sm:text-sm tracking-wide transition-all shadow-xs hover:shadow-sm border border-[#E5B542]/60 min-h-[38px] sm:min-h-[40px] shrink-0"
               >
                 <BookOpen className="w-4 h-4 text-[#20354D]" />
-                <span className="hidden xs:inline">सध्याचा अंक वाचा</span>
-                <span className="xs:hidden">अंक वाचा</span>
+                <span>सध्याचा अंक वाचा</span>
               </button>
 
               {/* User Account / Bookmarks */}
@@ -183,7 +184,7 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 onClick={onOpenAccount}
                 aria-label="खाते आणि जतन केलेले लेख"
-                className="p-2 sm:px-2.5 py-2 text-[#4A5568] hover:text-[#245A91] hover:bg-[#F5F7FA] rounded-full border border-[#E4E9EF] transition-colors flex items-center justify-center gap-1.5 min-w-[40px] min-h-[40px] focus-visible:outline-2 focus-visible:outline-[#245A91]"
+                className="p-2 sm:px-2.5 py-2 text-[#4A5568] hover:text-[#245A91] hover:bg-[#F5F7FA] rounded-full border border-[#E4E9EF] transition-colors flex items-center justify-center gap-1.5 min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px] focus-visible:outline-2 focus-visible:outline-[#245A91]"
               >
                 <User className="w-4 h-4" />
                 {user.bookmarks.length > 0 && (
@@ -193,12 +194,12 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
               </button>
 
-              {/* Mobile Menu Trigger */}
+              {/* Mobile Menu Trigger (Retained on mobile per requirement) */}
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label={mobileMenuOpen ? 'मेनू बंद करा' : 'मेनू उघडा'}
-                className="lg:hidden p-2 text-[#20354D] hover:bg-[#F5F7FA] rounded-lg min-h-[40px] min-w-[40px] flex items-center justify-center border border-[#E4E9EF] focus-visible:outline-2 focus-visible:outline-[#245A91]"
+                className="lg:hidden p-2 text-[#20354D] hover:bg-[#F5F7FA] rounded-lg min-h-[36px] min-w-[36px] sm:min-h-[40px] sm:min-w-[40px] flex items-center justify-center border border-[#E4E9EF] focus-visible:outline-2 focus-visible:outline-[#245A91]"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -208,7 +209,23 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-b border-[#E4E9EF] px-4 pt-3 pb-6 space-y-3 shadow-xl animate-fadeIn">
+          <div className="lg:hidden bg-white border-b border-[#E4E9EF] px-4 pt-3 pb-6 space-y-4 shadow-xl animate-fadeIn max-h-[85vh] overflow-y-auto">
+            {/* Prominent CTA in Mobile Menu */}
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onRequestRead?.();
+                }}
+                className="w-full py-3 px-4 rounded-xl bg-[#F2C14E] hover:bg-[#E5B542] text-[#20354D] font-bold text-sm tracking-wide transition-all shadow-xs flex items-center justify-center gap-2 border border-[#E5B542]/60"
+              >
+                <BookOpen className="w-4 h-4 text-[#20354D]" />
+                <span>सध्याचा अंक वाचा (Read Latest Issue)</span>
+              </button>
+            </div>
+
+            {/* Navigation Links */}
             <div className="space-y-1">
               <button
                 onClick={() => handleNavClick('home')}
@@ -238,18 +255,25 @@ export const Header: React.FC<HeaderProps> = ({
                     : 'text-[#252D38]'
                 }`}
               >
-                <span>मानसशास्त्रीय लेख संग्रह</span>
+                <span>मानसशास्त्र लेख व संशोधन</span>
                 <ChevronRight className="w-4 h-4 opacity-40" />
               </button>
               <button
                 onClick={() => handleNavClick('directory')}
                 className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium min-h-[44px] flex items-center justify-between ${
-                  currentPage === 'directory' || currentPage === 'experts'
-                    ? 'bg-[#EBF3FA] text-[#245A91] font-bold'
-                    : 'text-[#252D38]'
+                  currentPage === 'directory' ? 'bg-[#EBF3FA] text-[#245A91] font-bold' : 'text-[#252D38]'
                 }`}
               >
-                <span>तज्ज्ञ मार्गदर्शिका व मंडळ</span>
+                <span>तज्ज्ञ निर्देशिका (Directory)</span>
+                <ChevronRight className="w-4 h-4 opacity-40" />
+              </button>
+              <button
+                onClick={() => handleNavClick('experts')}
+                className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium min-h-[44px] flex items-center justify-between ${
+                  currentPage === 'experts' ? 'bg-[#EBF3FA] text-[#245A91] font-bold' : 'text-[#252D38]'
+                }`}
+              >
+                <span>तज्ज्ञ मंडळ (Expert Panel)</span>
                 <ChevronRight className="w-4 h-4 opacity-40" />
               </button>
               <button
@@ -267,7 +291,7 @@ export const Header: React.FC<HeaderProps> = ({
                   currentPage === 'about' ? 'bg-[#EBF3FA] text-[#245A91] font-bold' : 'text-[#252D38]'
                 }`}
               >
-                <span>आमच्याविषयी व ध्येय</span>
+                <span>आमच्याविषयी (About Us)</span>
                 <ChevronRight className="w-4 h-4 opacity-40" />
               </button>
               <button
@@ -276,43 +300,21 @@ export const Header: React.FC<HeaderProps> = ({
                   currentPage === 'contact' ? 'bg-[#EBF3FA] text-[#245A91] font-bold' : 'text-[#252D38]'
                 }`}
               >
-                <span>संपर्क व आपले लेख पाठवा</span>
+                <span>संपर्क आणि नोंदणी</span>
                 <ChevronRight className="w-4 h-4 opacity-40" />
               </button>
             </div>
 
-            <div className="pt-3 border-t border-[#E4E9EF] flex flex-col gap-2">
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  if (onOpenReader) onOpenReader();
-                  else handleNavClick('publications');
-                }}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#F2C14E] text-[#20354D] text-sm font-bold shadow-xs min-h-[44px]"
-              >
-                <BookOpen className="w-4 h-4" />
-                <span>सध्याचा अंक वाचा</span>
-              </button>
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenSearch();
-                }}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-[#E4E9EF] text-sm font-medium text-[#252D38] hover:bg-[#F5F7FA] min-h-[44px]"
-              >
-                <Search className="w-4 h-4" />
-                <span>लेख व अंक शोधा</span>
-              </button>
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenAccount();
-                }}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#245A91] text-white text-sm font-semibold min-h-[44px]"
-              >
-                <Bookmark className="w-4 h-4" />
-                <span>माझे जतन केलेले लेख ({user.bookmarks.length})</span>
-              </button>
+            {/* Quick Contacts inside Drawer */}
+            <div className="pt-2 border-t border-[#E4E9EF] text-xs text-[#626D79] space-y-2">
+              <div className="flex items-center gap-2">
+                <Phone className="w-3.5 h-3.5 text-[#245A91]" />
+                <span>+९१ ९८५०८८१२८६ / +९१ ९८५०९५७७५७</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail className="w-3.5 h-3.5 text-[#245A91]" />
+                <span>manovishleshanjalna@gmail.com</span>
+              </div>
             </div>
           </div>
         )}

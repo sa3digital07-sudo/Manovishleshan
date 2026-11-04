@@ -93,3 +93,71 @@ test('toggleBookmark toggles state immutably', () => {
   const added = toggleBookmark(removed, 'pub-3');
   assert.deepEqual(added, ['pub-2', 'pub-3']);
 });
+
+test('validateRegistration requires all 5 mandatory fields and matching passwords', async () => {
+  const { validateRegistration } = await import('./magazineLogic');
+
+  // Missing full name
+  const res1 = validateRegistration({
+    fullName: '',
+    email: 'test@example.com',
+    phone: '9822012345',
+    password: 'password123',
+    confirmPassword: 'password123',
+  });
+  assert.equal(res1.valid, false);
+  assert.ok(res1.error?.includes('नाव'));
+
+  // Invalid email
+  const res2 = validateRegistration({
+    fullName: 'अनिकेत देशमुख',
+    email: 'invalid-email',
+    phone: '9822012345',
+    password: 'password123',
+    confirmPassword: 'password123',
+  });
+  assert.equal(res2.valid, false);
+
+  // Short phone
+  const res3 = validateRegistration({
+    fullName: 'अनिकेत देशमुख',
+    email: 'test@example.com',
+    phone: '98220',
+    password: 'password123',
+    confirmPassword: 'password123',
+  });
+  assert.equal(res3.valid, false);
+
+  // Mismatch password
+  const res4 = validateRegistration({
+    fullName: 'अनिकेत देशमुख',
+    email: 'test@example.com',
+    phone: '9822012345',
+    password: 'password123',
+    confirmPassword: 'differentpassword',
+  });
+  assert.equal(res4.valid, false);
+
+  // Valid registration
+  const res5 = validateRegistration({
+    fullName: 'अनिकेत देशमुख',
+    email: 'test@example.com',
+    phone: '9822012345',
+    password: 'password123',
+    confirmPassword: 'password123',
+  });
+  assert.equal(res5.valid, true);
+  assert.equal(res5.error, undefined);
+});
+
+test('validateEmailLogin and validateOtpLogin work correctly', async () => {
+  const { validateEmailLogin, validateOtpLogin } = await import('./magazineLogic');
+
+  assert.equal(validateEmailLogin('', 'pass').valid, false);
+  assert.equal(validateEmailLogin('user@example.com', '').valid, false);
+  assert.equal(validateEmailLogin('user@example.com', 'pass123').valid, true);
+
+  assert.equal(validateOtpLogin('123', '5842').valid, false);
+  assert.equal(validateOtpLogin('9822012345', '12').valid, false);
+  assert.equal(validateOtpLogin('9822012345', '5842').valid, true);
+});

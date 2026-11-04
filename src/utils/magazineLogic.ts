@@ -129,3 +129,84 @@ export function toggleBookmark(bookmarks: string[], id: string): string[] {
   }
   return [...bookmarks, id];
 }
+
+export interface RegistrationData {
+  fullName: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface ValidationResponse {
+  valid: boolean;
+  error?: string;
+}
+
+/**
+ * Validate user registration fields according to required specs
+ * Mandatory: Full name, Email address, Mobile number, Password, Confirm password
+ */
+export function validateRegistration(data: RegistrationData): ValidationResponse {
+  if (!data.fullName || !data.fullName.trim()) {
+    return { valid: false, error: 'कृपया आपले पूर्ण नाव प्रविष्ट करा.' };
+  }
+
+  const email = data.email ? data.email.trim() : '';
+  if (!email) {
+    return { valid: false, error: 'कृपया आपला ईमेल पत्ता प्रविष्ट करा.' };
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return { valid: false, error: 'कृपया वैध ईमेल पत्ता प्रविष्ट करा.' };
+  }
+
+  const phone = data.phone ? data.phone.trim().replace(/\D/g, '') : '';
+  if (!phone) {
+    return { valid: false, error: 'कृपया आपला मोबाईल क्रमांक प्रविष्ट करा.' };
+  }
+  if (phone.length < 10) {
+    return { valid: false, error: 'मोबाईल क्रमांक किमान १० अंकी असावा.' };
+  }
+
+  if (!data.password || data.password.length < 6) {
+    return { valid: false, error: 'गुप्तशब्द (पासवर्ड) किमान ६ अक्षरांचा असावा.' };
+  }
+
+  if (!data.confirmPassword) {
+    return { valid: false, error: 'कृपया गुप्तशब्दाची पुष्टी (Confirm Password) करा.' };
+  }
+
+  if (data.password !== data.confirmPassword) {
+    return { valid: false, error: 'दोन्ही गुप्तशब्द जुळत नाहीत. कृपया पुन्हा तपासा.' };
+  }
+
+  return { valid: true };
+}
+
+/**
+ * Validate Option 1 Email login
+ */
+export function validateEmailLogin(email: string, password: string): ValidationResponse {
+  if (!email || !email.trim()) {
+    return { valid: false, error: 'कृपया आपला ईमेल पत्ता प्रविष्ट करा.' };
+  }
+  if (!password || !password.trim()) {
+    return { valid: false, error: 'कृपया आपला गुप्तशब्द प्रविष्ट करा.' };
+  }
+  return { valid: true };
+}
+
+/**
+ * Validate Option 2 Mobile OTP login
+ */
+export function validateOtpLogin(phone: string, otp: string): ValidationResponse {
+  const cleanPhone = phone ? phone.trim().replace(/\D/g, '') : '';
+  if (!cleanPhone || cleanPhone.length < 10) {
+    return { valid: false, error: 'कृपया वैध १० अंकी मोबाईल क्रमांक प्रविष्ट करा.' };
+  }
+  if (!otp || otp.trim().length !== 4) {
+    return { valid: false, error: 'कृपया ४ अंकी ओटीपी (OTP) प्रविष्ट करा.' };
+  }
+  return { valid: true };
+}
